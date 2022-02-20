@@ -84,7 +84,7 @@ class Multi_scale_ResNet(nn.Module):
         out = self.recon_trunk(fea)
         out = self.lrelu(self.pixel_shuffle(self.upconv1(out))) # upsample x2  B,nf,H,W -> B,64,H,W -> B,16,2*H,2*W
         out = self.lrelu(self.pixel_shuffle(self.upconv2(out))) # upsample x2  B,16,2*H,2*W -> B,64,2*H,2*W -> B,16,4*H,4*W
-        out_x12 = self.lrelu(self.pixel_shuffle1(self.upconv5(out))) # upsample x3  B,16,4*H,4*W -> B,144,4*H,4*H, -> B,16,8*H,8*W
+        out_x12 = self.lrelu(self.pixel_shuffle1(self.upconv5(out))) # upsample x3  B,16,4*H,4*W -> B,72,4*H,4*H, -> B,8,12*H,12*W
         out_x12 = self.conv_last(self.lrelu(self.HRconv(out_x12)))
         base = F.interpolate(x12, scale_factor=12, mode='bilinear', align_corners=False)
         base = self.Baseconv(base)
@@ -92,10 +92,10 @@ class Multi_scale_ResNet(nn.Module):
 
         fea = self.lrelu(self.conv_first(x24))
         out = self.recon_trunk(fea)
-        out = self.lrelu(self.pixel_shuffle(self.upconv1(out)))
-        out = self.lrelu(self.pixel_shuffle(self.upconv2(out)))
-        out = self.lrelu(self.pixel_shuffle(self.upconv3(out)))
-        out_x24 = self.lrelu(self.pixel_shuffle1(self.upconv5(out)))
+        out = self.lrelu(self.pixel_shuffle(self.upconv1(out))) # upsample x2  B,nf,H,W -> B,64,H,W -> B,16,2*H,2*W
+        out = self.lrelu(self.pixel_shuffle(self.upconv2(out))) # upsample x2  B,16,2*H,2*W -> B,64,2*H,2*W -> B,16,4*H,4*W
+        out = self.lrelu(self.pixel_shuffle(self.upconv3(out)))  # upsample x2  B,16,4*H,4*W -> B,64,4*H,4*W -> B,16,8*H,8*W
+        out_x24 = self.lrelu(self.pixel_shuffle1(self.upconv5(out))) # upsample x3  B,16,8*H,8*W -> B,72,8*H,8*H, -> B,8,24*H,24*W
         out_x24 = self.conv_last(self.lrelu(self.HRconv(out_x24)))
         base = F.interpolate(x24, scale_factor=24, mode='bilinear', align_corners=False)
         base = self.Baseconv(base)
@@ -103,10 +103,10 @@ class Multi_scale_ResNet(nn.Module):
 
         fea = self.lrelu(self.conv_first(x16))
         out = self.recon_trunk(fea)
-        out = self.lrelu(self.pixel_shuffle(self.upconv1(out)))
-        out = self.lrelu(self.pixel_shuffle(self.upconv2(out)))
-        out = self.lrelu(self.pixel_shuffle(self.upconv3(out)))
-        out_x16 = self.lrelu(self.pixel_shuffle(self.upconv4(out)))
+        out = self.lrelu(self.pixel_shuffle(self.upconv1(out))) # upsample x2  B,nf,H,W -> B,64,H,W -> B,16,2*H,2*W
+        out = self.lrelu(self.pixel_shuffle(self.upconv2(out))) # upsample x2  B,16,2*H,2*W -> B,64,2*H,2*W -> B,16,4*H,4*W
+        out = self.lrelu(self.pixel_shuffle(self.upconv3(out))) # upsample x2  B,16,4*H,4*W -> B,64,4*H,4*W -> B,16,8*H,8*W
+        out_x16 = self.lrelu(self.pixel_shuffle(self.upconv4(out))) # upsample x2  B,16,8*H,8*W -> B,32,8*H,8*W -> B,8,16*H,16*W
         out_x16 = self.conv_last(self.lrelu(self.HRconv(out_x16)))
         base = F.interpolate(x16, scale_factor=16, mode='bilinear', align_corners=False)
         base = self.Baseconv(base)
